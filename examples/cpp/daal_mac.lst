@@ -1,0 +1,140 @@
+#===============================================================================
+# Copyright 2014-2016 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#===============================================================================
+
+##  Content:
+##     Intel(R) Data Analytics Acceleration Library examples list
+##******************************************************************************
+
+DAAL  = apriori_batch                                \
+        adaboost_batch                               \
+        brownboost_batch                             \
+        logitboost_batch                             \
+        cholesky_batch                               \
+        compressor                                   \
+        compression_batch                            \
+        compression_online                           \
+        covariance_dense_batch                       \
+        covariance_dense_online                      \
+        covariance_dense_distributed                 \
+        covariance_csr_batch                         \
+        covariance_csr_online                        \
+        covariance_csr_distributed                   \
+        datastructures_aos                           \
+        datastructures_homogen                       \
+        datastructures_homogentensor                 \
+        datastructures_soa                           \
+        datastructures_csr                           \
+        datastructures_merged                        \
+        correlation_distance_batch                   \
+        cosine_distance_batch                        \
+        em_gmm_batch                                 \
+        implicit_als_csr_batch                       \
+        implicit_als_csr_distributed                 \
+        implicit_als_dense_batch                     \
+        kernel_function_linear_dense_batch           \
+        kernel_function_linear_csr_batch             \
+        kernel_function_rbf_dense_batch              \
+        kernel_function_rbf_csr_batch                \
+        kmeans_dense_batch                           \
+        kmeans_dense_distributed                     \
+        kmeans_csr_batch                             \
+        kmeans_csr_distributed                       \
+        linear_regression_norm_eq_batch              \
+        linear_regression_norm_eq_distributed        \
+        linear_regression_norm_eq_online             \
+        linear_regression_qr_batch                   \
+        linear_regression_qr_distributed             \
+        linear_regression_qr_online                  \
+        low_order_moments_dense_batch                \
+        low_order_moments_dense_distributed          \
+        low_order_moments_dense_online               \
+        low_order_moments_csr_batch                  \
+        low_order_moments_csr_distributed            \
+        low_order_moments_csr_online                 \
+        multinomial_naive_bayes_dense_batch          \
+        multinomial_naive_bayes_dense_online         \
+        multinomial_naive_bayes_dense_distributed    \
+        multinomial_naive_bayes_csr_batch            \
+        multinomial_naive_bayes_csr_online           \
+        multinomial_naive_bayes_csr_distributed      \
+        outlier_detection_multivariate_bacon_batch   \
+        outlier_detection_multivariate_default_batch \
+        outlier_detection_univariate_batch           \
+        pca_correlation_dense_batch                  \
+        pca_correlation_dense_distributed            \
+        pca_correlation_dense_online                 \
+        pca_correlation_csr_batch                    \
+        pca_correlation_csr_distributed              \
+        pca_correlation_csr_online                   \
+        pca_svd_dense_batch                          \
+        pca_svd_dense_distributed                    \
+        pca_svd_dense_online                         \
+        qr_batch                                     \
+        qr_distributed                               \
+        qr_online                                    \
+        serialization                                \
+        stump_batch                                  \
+        svd_batch                                    \
+        svd_distributed                              \
+        svd_online                                   \
+        svm_multi_class_dense_batch                  \
+        svm_multi_class_csr_batch                    \
+        svm_two_class_dense_batch                    \
+        svm_two_class_csr_batch                      \
+        library_version_info                         \
+        quantiles_batch                              \
+        svm_two_class_quality_metric_set_batch       \
+        svm_multi_class_quality_metric_set_batch     \
+        pivoted_qr_batch                             \
+        set_number_of_threads                        \
+        relu_layer_batch                             \
+        relu_csr_batch                               \
+        relu_dense_batch                             \
+        smoothrelu_layer_batch                       \
+        smoothrelu_batch                             \
+        abs_layer_batch                              \
+        abs_dense_batch                              \
+        abs_csr_batch                                \
+        fullyconnected_layer_batch                   \
+        sorting_batch                                \
+        softmax_batch                                \
+        softmax_layer_batch                          \
+        error_handling_nothrow                       \
+        error_handling_throw                         \
+        logistic_batch                               \
+        logistic_layer_batch                         \
+        tanh_csr_batch                               \
+        tanh_dense_batch                             \
+        tanh_layer_batch                             \
+        dropout_layer_batch                          \
+        batch_normalization_layer_batch              \
+        lrn_layer_batch                              \
+        convolution2d_layer_batch                    \
+        sgd_batch                                    \
+        sgd_mini_batch                               \
+        lbfgs_batch                                  \
+        mse_batch                                    \
+        zscore_batch                                 \
+        neural_network_batch                         \
+        prelu_layer_batch                            \
+        split_layer_batch                            \
+        concat_layer_batch                           \
+        average_pooling1d_layer_batch                \
+        average_pooling2d_layer_batch                \
+        average_pooling3d_layer_batch                \
+        maximum_pooling1d_layer_batch                \
+        maximum_pooling2d_layer_batch                \
+        maximum_pooling3d_layer_batch
