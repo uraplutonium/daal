@@ -27,35 +27,36 @@ Let us know if you have any troubles with the distribution you are using.
 ### Validated Operating Systems
 * Windows* 8 (IA-32 / Intel(R) 64)
 * Windows* 8.1 (IA-32 / Intel(R) 64)
-* Windows Server* 2008 R2 SP1 and SP2 (IA-32 / Intel(R) 64)
-* Windows HPC Server* 2008 R2 (IA-32 / Intel(R) 64)
-* Windows Server* 2012 (IA-32 / Intel(R) 64)
+* Windows* 10 (IA-32 / Intel(R) 64)
+* Windows Server* 2008 R2 SP1 and SP2
+* Windows HPC Server* 2008 R2
+* Windows Server* 2012
 * Red Hat Enterprise Linux* 6 (IA-32 / Intel(R) 64)
-* Red Hat Enterprise Linux* 7 (IA-32 / Intel(R) 64)
+* Red Hat Enterprise Linux* 7
 * Red Hat Fedora Core* 20 (IA-32 / Intel(R) 64)
 * Red Hat Fedora Core* 23 (IA-32 / Intel(R) 64)
-* Red Hat Fedora Core* 24 (IA-32 / Intel(R) 64)
+* Red Hat Fedora Core* 24
 * SUSE Linux Enterprise Server* 11
 * SUSE Linux Enterprise Server* 12
 * Debian GNU/Linux* 8 (IA-32 / Intel(R) 64)
 * Ubuntu* 14.04 LTS (IA-32 / Intel(R) 64)
-* Ubuntu* 15.04 (IA-32 / Intel(R) 64)
+* Ubuntu* 15.10 (IA-32 / Intel(R) 64)
 * OS X\* 10.11 (Xcode* 7.0)
 
 ### Validated C/C++ Compilers for Windows*
 * Intel(R) C++ Compiler 16.0 for Windows* OS
-* Intel(R) C++ Compiler 17.0 for Windows* OS
+* Intel(R) C++ Compiler 17.0 Beta for Windows* OS
 * Microsoft Visual Studio* 2013
 * Microsoft Visual Studio* 2015
 
 ### Validated C/C++ Compilers for Linux*
 * Intel(R) C++ Compiler 16.0 for Linux* OS
-* Intel(R) C++ Compiler 17.0 for Linux* OS
+* Intel(R) C++ Compiler 17.0 Beta for Linux* OS
 * GNU Compiler Collection* 5.1 and later
 
 ### Validated C/C++ Compilers for OS X*
 * Intel(R) C++ Compiler 16.0 for OS X*
-* Intel(R) C++ Compiler 17.0 for OS X*
+* Intel(R) C++ Compiler 17.0 Beta for OS X*
 * Clang\* from Xcode* 7
 
 ### Validated Java* Compilers:
@@ -73,7 +74,7 @@ For platform-specific getting started documents, see the following pages:
 ### Installing from the Binaries
 You can download an archive from the GitHub\* release page at [https://github.com/01org/daal/releases](https://github.com/01org/daal/releases). This archive contains a script to set the environment variables for library usage in the *daal/bin* directory.
 
-If you have issues with running the script, you may need to replace the *INSTALLDIR* string in *daal/bin/daalvars.csh* and/or *daal/bin/daalvars.csh* with the name of the directory where you unpacked the archive.
+If you have issues with running the script, you may need to replace the *INSTALLDIR* string in *daal/bin/daalvars.sh* and/or *daal/bin/daalvars.csh* with the name of the directory where you unpacked the archive.
 
 ### Installing from the Sources
 
@@ -139,4 +140,3 @@ Intel DAAL can be also used with Python\* interfaces. You can find the pyDAAL pa
 ## See Also
 * [Intel(R) DAAL Product Page](https://software.intel.com/en-us/intel-daal)
 * [Intel(R) DAAL Forum](https://software.intel.com/en-us/forums/intel-data-analytics-acceleration-library)
-* [https://github.com/intel-daal/daal/blob/master/LICENSE](https://github.com/01org/daal/blob/master/LICENSE)
