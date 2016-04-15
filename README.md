@@ -9,7 +9,7 @@ You can find the latest Intel DAAL documentation on [this page](https://software
 
 We also have many [tutorials and training
 materials](https://software.intel.com/en-us/intel-daal-support/training), and an actively monitored
-(user forum)[https://software.intel.com/en-us/forums/intel-data-analytics-acceleration-library].
+[user forum](https://software.intel.com/en-us/forums/intel-data-analytics-acceleration-library).
 
 ## How to Contribute
 We welcome community contributions to Intel DAAL. If you have an idea how to improve the product:
