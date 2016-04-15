@@ -9,8 +9,7 @@ You can find the latest Intel DAAL documentation on [this page](https://software
 
 We also have many [tutorials and training
 materials](https://software.intel.com/en-us/intel-daal-support/training), and an actively monitored
-(user
- forum)[https://software.intel.com/en-us/forums/intel-data-analytics-acceleration-library].
+(user forum)[https://software.intel.com/en-us/forums/intel-data-analytics-acceleration-library].
 
 ## How to Contribute
 We welcome community contributions to Intel DAAL. If you have an idea how to improve the product:
@@ -20,12 +19,12 @@ We welcome community contributions to Intel DAAL. If you have an idea how to imp
 * In case of a larger feature, provide a relevant example
 * Submit a pull request at [https://github.com/01org/daal/pulls](https://github.com/01org/daal/pulls)
 
+We will review your contribution and, if any additional fixes or modifications are necessary, may give some feedback to guide you. When accepted, your pull request will be merged into our internal and GitHub* repositories.
+
 Intel DAAL is licensed under [Apache License, Version
 2.0](http://www.apache.org/licenses/LICENSE-2.0). By contributing to the
 project, you agree to the license and copyright terms therein and release your
 contribution under these terms. 
-
-We will review your contribution and, if any additional fixes or modifications are necessary, may give some feedback to guide you. When accepted, your pull request will be merged into our internal and GitHub* repositories.
 
 ## <a name="system-requirements"></a>System Requirements
 Intel DAAL supports the IA-32 and Intel&reg; 64 architectures. For a detailed explanation of these architecture names, read the [Intel Architecture Platform Terminology for Development Tools](https://software.intel.com/en-us/articles/intel-architecture-platform-terminology-for-development-tools) article.
