@@ -148,10 +148,9 @@ Built libraries are located in the *\_\_release\_{os_name}/daal* directory.
 Intel DAAL can be also used with Python\* interfaces. You can find the pyDAAL package at [http://anaconda.org/intel/pydaal](http://anaconda.org/intel/pydaal).
 -->
 Python support is not available for the DAAL open source project at this time.
-But it is available in the proprietary edition of [Intel DAAL 2017
+But it is available in the latest proprietary edition of [Intel DAAL 2017
 Beta](https://software.intel.com/en-us/articles/intel-daal-2017-release-notes).
-Users can request Intel DAAL 2017 Beta from
-[here](https://softwareproductsurvey.intel.com/f/150587/1103/).
+Users can find pre-built Python packages for DAAL (pyDAAL) from [http://anaconda.org/intel/pydaal](http://anaconda.org/intel/pydaal).
 
 ## See Also
 * [Intel&reg; DAAL Product Page](https://software.intel.com/en-us/intel-daal)
