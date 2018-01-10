@@ -86,6 +86,7 @@ If you have issues with running the script, you may need to replace the *INSTALL
 * C/C++ compiler (see [System Requirements](#system-requirements))
 * Java\* JDK (see [System Requirements](#system-requirements))
 * Microsoft Visual Studio\* (Windows* only)
+* [Git Large File Storage (LFS) extension](https://git-lfs.github.com)
 * [http://msys2.github.io](http://msys2.github.io) with the msys/make package (Windows* only); install the package as follows:
 
         pacman -S msys/make
