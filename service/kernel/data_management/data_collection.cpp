@@ -85,9 +85,12 @@ DAAL_EXPORT services::SharedPtr<T> &KeyValueCollection<T>::insert(size_t k)
     template DAAL_EXPORT services::SharedPtr<T> &KeyValueCollection<T>::insert(size_t k); \
     template DAAL_EXPORT const services::SharedPtr<T> &KeyValueCollection<T>::find(size_t k) const;
 
-DAAL_INSTANTIATE_KEYVALUECOLLECTION( NumericTable       );
-DAAL_INSTANTIATE_KEYVALUECOLLECTION( algorithms::Input  );
-DAAL_INSTANTIATE_KEYVALUECOLLECTION( SerializationIface );
+DAAL_INSTANTIATE_KEYVALUECOLLECTION( NumericTable            );
+DAAL_INSTANTIATE_KEYVALUECOLLECTION( algorithms::Input       );
+DAAL_INSTANTIATE_KEYVALUECOLLECTION( SerializationIface      );
+DAAL_INSTANTIATE_KEYVALUECOLLECTION( BlockDescriptor<float>  );
+DAAL_INSTANTIATE_KEYVALUECOLLECTION( BlockDescriptor<double> );
+DAAL_INSTANTIATE_KEYVALUECOLLECTION( BlockDescriptor<int>    );
 
 /** @} */
 

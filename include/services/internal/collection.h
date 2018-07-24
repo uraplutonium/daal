@@ -96,7 +96,7 @@ public:
     template<typename U>
     bool safe_push_back()
     {
-        return _objects.push_back(new U());
+        return _objects.safe_push_back(new U());
     }
 
 private:

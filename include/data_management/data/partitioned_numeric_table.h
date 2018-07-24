@@ -44,6 +44,9 @@
 
 #include "data_management/data/data_collection.h"
 #include "data_management/data/merged_numeric_table.h"
+#include "data_management/data/internal/indexers.h"
+
+#include "services/internal/buffer.h"
 #include "services/internal/error_handling_helpers.h"
 
 namespace daal
@@ -56,6 +59,172 @@ namespace interface1
  * @ingroup numeric_tables
  * @{
  */
+
+/**
+ *  <a name="DAAL-CLASS-DATA_MANAGEMENT__PARTITIONEDBLOCKDESCRIPTOR"></a>
+ *  \brief Base class that manages buffer memory for read/write
+ *  operations required by partitioned numeric tables
+ */
+template <typename DataType = DAAL_DATA_TYPE>
+class PartitionedBlockDescriptor : public Base
+{
+private:
+    typedef services::AllocatorIface<DataType> Allocator;
+    typedef services::SharedPtr<Allocator> AllocatorPtr;
+
+public:
+    /* Type of a key for partition */
+    typedef size_t KeyType;
+
+    /* Type of a block descriptor to be used
+     * to store a data for each partition */
+    typedef BlockDescriptor<DataType> PartitionBlock;
+
+    PartitionedBlockDescriptor() :
+        _allocator(new services::ScalableAllocator<DataType>()) { }
+
+    template <class AllocatorType>
+    explicit PartitionedBlockDescriptor(const AllocatorType &allocator) :
+        _allocator(new AllocatorType(allocator)) { }
+
+    explicit PartitionedBlockDescriptor(const AllocatorPtr &allocator) :
+        _allocator(allocator) { }
+
+    virtual ~PartitionedBlockDescriptor()
+    { deallocateBlockDescriptors(); }
+
+    services::Status reserve(size_t numberOfPartitions)
+    {
+        const bool changeOnlyCapacity = false;
+        const bool isResized = _keys.reallocate(numberOfPartitions) &&
+                               _blocks.reallocate(numberOfPartitions);
+        DAAL_CHECK(isResized, services::ErrorMemoryAllocationFailed);
+
+        /* Call contructors for all the PartitionBlocks and pass the allocator */
+        for (size_t i = 0; i < numberOfPartitions; i++)
+        {
+            PartitionBlock *partition = &_blocks[i];
+            ::new ( (void *)(partition) ) PartitionBlock(_allocator);
+        }
+
+        return services::Status();
+    }
+
+    void clear()
+    {
+        deallocateBlockDescriptors();
+        _keys.destroy();
+        _blocks.destroy();
+    }
+
+    size_t size() const
+    {
+        DAAL_ASSERT( _keys.size() == _blocks.size() );
+        return _keys.size();
+    }
+
+    bool setIndexKeyPair(size_t index, const KeyType &key)
+    {
+        const bool isValid = (index < size());
+
+        if (isValid)
+        { _keys[index] = key; }
+
+        return isValid;
+    }
+
+    const PartitionBlock &getBlockDescriptor(const KeyType &key) const
+    {
+        size_t index;
+        if (indexOf(key, index))
+        { return _blocks[index]; }
+
+        return _nullBlock;
+    }
+
+    PartitionBlock &getBlockDescriptor(const KeyType &key)
+    {
+        size_t index;
+        if (indexOf(key, index))
+        { return _blocks[index]; }
+
+        return _nullBlock;
+    }
+
+    const PartitionBlock &getBlockDescriptorByIndex(size_t index) const
+    {
+        if (index < size())
+        { return _blocks[index]; }
+
+        return _nullBlock;
+    }
+
+    PartitionBlock &getBlockDescriptorByIndex(size_t index)
+    {
+        if (index < size())
+        { return _blocks[index]; }
+
+        return _nullBlock;
+    }
+
+    const DataType *getBlockPtr(const KeyType &key) const
+    {
+        return getBlockDescriptor(key).getBlockPtr();
+    }
+
+    DataType *getBlockPtr(const KeyType &key)
+    {
+        return getBlockDescriptor(key).getBlockPtr();
+    }
+
+    const DataType *getBlockPtrByIndex(size_t index) const
+    {
+        return getBlockDescriptorByIndex(index).getBlockPtr();
+    }
+
+    DataType *getBlockPtrByIndex(size_t index)
+    {
+        return getBlockDescriptorByIndex(index).getBlockPtr();
+    }
+
+    void setMode(ReadWriteMode mode)
+    { _mode = mode; }
+
+    ReadWriteMode getMode() const
+    { return _mode; }
+
+private:
+    /* Disable copy and assigment operators */
+    PartitionedBlockDescriptor(const PartitionedBlockDescriptor &);
+    PartitionedBlockDescriptor& operator =(const PartitionedBlockDescriptor &);
+
+    bool indexOf(const KeyType &key, size_t &index) const
+    {
+        for (size_t i = 0; i < size(); i++)
+        {
+            if (_keys[i] == key)
+            {
+                index = i;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void deallocateBlockDescriptors()
+    {
+        for (size_t i = 0; i < _blocks.size(); i++)
+        { _blocks[i].~PartitionBlock(); }
+    }
+
+    ReadWriteMode _mode;
+    PartitionBlock _nullBlock;
+    services::internal::Buffer<KeyType> _keys;
+    services::internal::Buffer<PartitionBlock> _blocks;
+    AllocatorPtr _allocator;
+};
+
 /**
  *  <a name="DAAL-CLASS-DATA_MANAGEMENT__PARTITIONEDNUMERICTABLE"></a>
  *  \brief Class that provides methods to access a collection of numeric tables as if they are joined by columns
@@ -69,7 +238,7 @@ public:
     DECLARE_SERIALIZABLE_TAG();
     DECLARE_SERIALIZABLE_IMPL();
 
-    /* */
+    /* Type of a key for partition */
     typedef size_t KeyType;
 
     /* */
@@ -216,6 +385,57 @@ public:
         return _mergedTable->allocateBasicStatistics();
     }
 
+    /* getPartitionedBlock overloads */
+    template <typename T>
+    services::Status getPartitionedBlock(const KeyType &key,
+                                         ReadWriteMode rwflag, PartitionedBlockDescriptor<T> &block)
+    { return getPartitionedBlockIdx<T>(internal::idx::single(key), rwflag, block); }
+
+    template <typename T>
+    services::Status getPartitionedBlock(const KeyType &beginKey, const KeyType &endKey,
+                                         ReadWriteMode rwflag, PartitionedBlockDescriptor<T> &block)
+    { return getPartitionedBlockIdx<T>(internal::idx::range(beginKey, endKey), rwflag, block); }
+
+    template <typename T>
+    services::Status getPartitionedBlock(const services::Collection<KeyType> &container,
+                                         ReadWriteMode rwflag, PartitionedBlockDescriptor<T> &block)
+    { return getPartitionedBlockIdx<T>(internal::idx::many(container), rwflag, block); }
+
+    template <typename T>
+    services::Status getPartitionedBlock(const std::vector<KeyType> &container,
+                                         ReadWriteMode rwflag, PartitionedBlockDescriptor<T> &block)
+    { return getPartitionedBlockIdx<T>(internal::idx::many(container), rwflag, block); }
+
+    template <typename T>
+    services::Status getPartitionedBlock(ReadWriteMode rwflag, PartitionedBlockDescriptor<T> &block)
+    { return getPartitionedBlockIdx<T>(internal::idx::many(_partitionsMap->getKeys()), rwflag, block); }
+
+
+    /* releasePartitionedBlock overloads */
+    template <typename T>
+    services::Status releasePartitionedBlock(const KeyType &key,
+                                             PartitionedBlockDescriptor<T> &block)
+    { return releasePartitionedBlockIdx<T>(internal::idx::single(key), block); }
+
+    template <typename T>
+    services::Status releasePartitionedBlock(const KeyType &beginKey, const KeyType &endKey,
+                                             PartitionedBlockDescriptor<T> &block)
+    { return releasePartitionedBlockIdx<T>(internal::idx::range(beginKey, endKey), block); }
+
+    template <typename T>
+    services::Status releasePartitionedBlock(const services::Collection<KeyType> &container,
+                                             PartitionedBlockDescriptor<T> &block)
+    { return releasePartitionedBlockIdx<T>(internal::idx::many(container), block); }
+
+    template <typename T>
+    services::Status releasePartitionedBlock(const std::vector<KeyType> &container,
+                                             PartitionedBlockDescriptor<T> &block)
+    { return releasePartitionedBlockIdx<T>(internal::idx::many(container), block); }
+
+    template <typename T>
+    services::Status releasePartitionedBlock(PartitionedBlockDescriptor<T> &block)
+    { return releasePartitionedBlockIdx<T>(internal::idx::many(_partitionsMap->getKeys()), block); }
+
 protected:
     template<typename Archive, bool onDeserialize>
     services::Status serialImpl(Archive *arch)
@@ -236,6 +456,14 @@ protected:
         return _ddict->setNumberOfFeatures(ncol);
     }
 
+    template <typename T>
+    DAAL_EXPORT services::Status getPartitionedBlockIdx(const internal::Indexer<KeyType> &partitionsIndexer,
+                                                        ReadWriteMode rwflag, PartitionedBlockDescriptor<T> &block);
+
+    template <typename T>
+    DAAL_EXPORT services::Status releasePartitionedBlockIdx(const internal::Indexer<KeyType> &partitionsIndexer,
+                                                            PartitionedBlockDescriptor<T> &block);
+
     explicit PartitionedNumericTable(services::Status &st);
 
 private:
@@ -249,6 +477,7 @@ typedef services::SharedPtr<PartitionedNumericTable> PartitionedNumericTablePtr;
 
 using interface1::PartitionedNumericTable;
 using interface1::PartitionedNumericTablePtr;
+using interface1::PartitionedBlockDescriptor;
 
 } // namespace data_management
 } // namespace daal

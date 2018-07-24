@@ -55,7 +55,6 @@
 #include "engine_batch_impl.h"
 
 using namespace daal::data_management;
-using namespace daal::services;
 
 namespace daal
 {
@@ -74,7 +73,7 @@ template <typename algorithmFPType, Method method, CpuType cpu>
 class ClassificationTrainBatchKernel : public daal::algorithms::Kernel
 {
 public:
-    services::Status compute(HostAppIface* pHost, const NumericTable *x, const NumericTable *y,
+    services::Status compute(services::HostAppIface* pHost, const NumericTable *x, const NumericTable *y,
         gbt::classification::Model& m, Result& res, const Parameter& par,
         engines::internal::BatchBaseImpl& engine);
 };

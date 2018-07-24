@@ -50,9 +50,9 @@
 #define __NUMERIC_TABLE_H__
 
 #include "services/base.h"
-#include "services/daal_defines.h"
-#include "services/daal_memory.h"
+#include "services/allocators.h"
 #include "services/error_handling.h"
+
 #include "algorithms/algorithm_types.h"
 #include "data_management/data/data_collection.h"
 #include "data_management/data/data_dictionary.h"
@@ -75,18 +75,34 @@ class NumericTable;
 
 /**
  *  <a name="DAAL-CLASS-DATA_MANAGEMENT__BLOCKDESCRIPTOR"></a>
- *  \brief %Base class that manages buffer memory for read/write operations required by numeric tables.
+ *  \brief Base class that manages buffer memory for read/write operations required by numeric tables.
  */
 template<typename DataType = DAAL_DATA_TYPE>
-class DAAL_EXPORT BlockDescriptor
+class DAAL_EXPORT BlockDescriptor : public Base
 {
+private:
+    typedef services::AllocatorIface<DataType> Allocator;
+    typedef services::AllocatorDeleter<DataType> Deleter;
+    typedef services::SharedPtr<Allocator> AllocatorPtr;
+
 public:
     /** \private */
-    BlockDescriptor() : _ptr(), _buffer(), _capacity(0), _ncols(0), _nrows(0), _colsOffset(0), _rowsOffset(0), _rwFlag(0), _pPtr(0), _rawPtr(0)
-    {}
+    BlockDescriptor() :
+        _allocator(new services::DefaultAllocator<DataType>())
+    { initialize(); }
+
+    template <class AllocatorType>
+    explicit BlockDescriptor(const AllocatorType &allocator) :
+        _allocator(new AllocatorType(allocator))
+    { initialize(); }
+
+    explicit BlockDescriptor(const AllocatorPtr &allocator) :
+        _allocator(allocator)
+    { initialize(); }
 
     /** \private */
-    ~BlockDescriptor() { freeBuffer(); }
+    virtual ~BlockDescriptor()
+    { freeBuffer(); }
 
     /**
      *  Gets a pointer to the buffer
@@ -109,7 +125,8 @@ public:
     {
         if(_rawPtr)
         {
-            return services::SharedPtr<DataType>(services::reinterpretPointerCast<DataType, byte>(*_pPtr), (DataType *)_rawPtr);
+            return services::SharedPtr<DataType>(services::reinterpretPointerCast<DataType, byte>(*_pPtr),
+                                                 (DataType *)_rawPtr);
         }
         return _ptr;
     }
@@ -179,12 +196,13 @@ public:
         _ncols = nColumns;
         _nrows = nRows;
 
-        size_t newSize = nColumns * nRows * sizeof(DataType) + auxMemorySize;
+        size_t newSize = nColumns * nRows + auxMemorySize;
 
         if ( newSize  > _capacity )
         {
             freeBuffer();
-            _buffer = services::SharedPtr<DataType>((DataType *)daal::services::daal_malloc(newSize), services::ServiceDeleter());
+            _buffer = services::SharedPtr<DataType>(_allocator->allocate(newSize),
+                                                    Deleter(_allocator, newSize));
             if ( _buffer != 0 )
             {
                 _capacity = newSize;
@@ -223,6 +241,11 @@ public:
         _colsOffset = columnIdx;
         _rowsOffset = rowIdx;
         _rwFlag     = rwFlag;
+    }
+
+    inline void setRWFlag(ReadWriteMode rwFlag)
+    {
+        _rwFlag = rwFlag;
     }
 
     /**
@@ -264,6 +287,18 @@ protected:
     }
 
 private:
+    void initialize()
+    {
+        _nrows      = 0;
+        _ncols      = 0;
+        _colsOffset = 0;
+        _rowsOffset = 0;
+        _rwFlag     = 0;
+        _capacity   = 0;
+        _pPtr       = 0;
+        _rawPtr     = 0;
+    }
+
     services::SharedPtr<DataType> _ptr;
     size_t    _nrows;
     size_t    _ncols;
@@ -279,6 +314,8 @@ private:
 
     services::SharedPtr<byte> *_pPtr;
     byte *_rawPtr;
+
+    AllocatorPtr _allocator;
 };
 
 /**

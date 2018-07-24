@@ -72,7 +72,9 @@ public:
         _buffer(NULL),
         _size(0) { }
 
-    explicit Buffer(size_t size, services::Status *status = NULL)
+    explicit Buffer(size_t size, services::Status *status = NULL) :
+        _buffer(NULL),
+        _size(0)
     {
         services::Status localStatus = reallocate(size);
         services::internal::tryAssignStatusAndThrow(status, localStatus);
@@ -83,6 +85,9 @@ public:
         destroy();
     }
 
+    operator bool() const
+    { return size() > 0; }
+
     void destroy()
     {
         services::daal_free((void *)_buffer);
@@ -92,8 +97,11 @@ public:
 
     services::Status reallocate(size_t size, bool copy = false)
     {
-        if (_size == size)
-        { return services::Status(); }
+        if (_size >= size)
+        {
+            _size = size;
+            return services::Status();
+        }
 
         T *buffer = (T *)services::daal_malloc( sizeof(T) * size );
         if (!buffer)

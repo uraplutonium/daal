@@ -54,7 +54,6 @@
 #include "decision_forest_regression_training_types.h"
 
 using namespace daal::data_management;
-using namespace daal::services;
 
 namespace daal
 {
@@ -73,7 +72,7 @@ template <typename algorithmFPType, Method method, CpuType cpu>
 class RegressionTrainBatchKernel : public daal::algorithms::Kernel
 {
 public:
-    services::Status compute(HostAppIface* pHostApp, const NumericTable *x, const NumericTable *y,
+    services::Status compute(services::HostAppIface* pHostApp, const NumericTable *x, const NumericTable *y,
         decision_forest::regression::Model& m, Result& res, const Parameter& par);
 };
 

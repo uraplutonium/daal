@@ -201,6 +201,7 @@ public:
 
     /** Default constructor */
     KeyValueCollection() {}
+
     /** Copy constructor */
     KeyValueCollection(const KeyValueCollection &other) : _keys(other._keys), _values(other._values) {}
 
@@ -291,6 +292,11 @@ public:
     {
         _keys.clear();
         _values.clear();
+    }
+
+    const services::Collection<size_t> &getKeys() const
+    {
+        return _keys;
     }
 
 protected:

@@ -396,6 +396,7 @@ enum ErrorID
 
     // Data management errors:  -80001..
     ErrorUserAllocatedMemory = -80001,                                  /*!< Couldn't free memory allocated by user */
+    ErrorKeyIsNotFound = -80002,                                        /*!< Element with the given key does not exist */
 
     //Math errors: -90000..-100000
     ErrorDataSourseNotAvailable = -90041,                               /*!< ErrorDataSourseNotAvailable */

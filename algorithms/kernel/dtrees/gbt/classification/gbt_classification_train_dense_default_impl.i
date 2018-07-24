@@ -84,7 +84,7 @@ public:
         const IndexType* sampleInd,
         algorithmFPType* gh) DAAL_C11_OVERRIDE
     {
-        TVector<algorithmFPType, cpu, ScalableAllocator<cpu>> aExp(n);
+        TVector<algorithmFPType, cpu, dtrees::internal::ScalableAllocator<cpu>> aExp(n);
         auto exp = aExp.get();
         const algorithmFPType expThreshold = daal::internal::Math<algorithmFPType, cpu>::vExpThreshold();
         if(sampleInd)

@@ -52,6 +52,7 @@
 #include "services/daal_memory.h"
 #include "services/error_id.h"
 #include "services/daal_atomic_int.h"
+#include "services/allocators.h"
 
 namespace daal
 {
@@ -484,6 +485,30 @@ SharedPtr<T> dynamicPointerCast(const SharedPtr<U> &r)
         return SharedPtr<T>();
     }
 }
+
+/**
+ * <a name="DAAL-CLASS-SERVICES__EMPTYDELETER"></a>
+ * \brief Implementation of DeleterIface with allocator
+ */
+template <class T>
+class AllocatorDeleter : public DeleterIface
+{
+public:
+    explicit AllocatorDeleter(const SharedPtr< AllocatorIface<T> > &allocator,
+                              size_t numberOfAllocatedObjects) :
+        _allocator(allocator),
+        _numberOfAllocatedObjects(numberOfAllocatedObjects) { }
+
+    void operator() (const void *ptr) DAAL_C11_OVERRIDE
+    {
+        _allocator->deallocate((T *)ptr, _numberOfAllocatedObjects);
+    }
+
+private:
+    SharedPtr< AllocatorIface<T> > _allocator;
+    size_t _numberOfAllocatedObjects;
+};
+
 /** @} */
 } // namespace interface1
 using interface1::DeleterIface;
@@ -496,6 +521,7 @@ using interface1::SharedPtr;
 using interface1::staticPointerCast;
 using interface1::dynamicPointerCast;
 using interface1::reinterpretPointerCast;
+using interface1::AllocatorDeleter;
 
 } // namespace services;
 } // namespace daal

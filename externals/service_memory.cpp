@@ -47,6 +47,7 @@
 
 #include "service_memory.h"
 #include "service_service.h"
+#include "threading.h"
 
 void *daal::services::daal_malloc(size_t size, size_t alignment)
 {
@@ -56,6 +57,16 @@ void *daal::services::daal_malloc(size_t size, size_t alignment)
 void daal::services::daal_free(void *ptr)
 {
     daal::internal::Service<>::serv_free(ptr);
+}
+
+void *daal::services::daal_scalable_malloc(size_t size, size_t alignment)
+{
+    return daal::threaded_scalable_malloc(size, alignment);
+}
+
+void daal::services::daal_scalable_free(void *ptr)
+{
+    daal::threaded_scalable_free(ptr);
 }
 
 namespace daal

@@ -1,4 +1,4 @@
-/* file: daal_memory.h */
+/* file: allocators.h */
 /*******************************************************************************
 * Copyright 2014-2018 Intel Corporation
 * All Rights Reserved.
@@ -39,73 +39,56 @@
 * limitations under the License.
 *******************************************************************************/
 
-/*
-//++
-//  Common definitions.
-//--
-*/
+#ifndef __SERVICES_ALLOCATORS_H__
+#define __SERVICES_ALLOCATORS_H__
 
-#ifndef __DAAL_MEMORY_H__
-#define __DAAL_MEMORY_H__
-
-#include "services/daal_defines.h"
+#include "services/daal_memory.h"
 
 namespace daal
 {
-/**
- * \brief Contains classes that implement service functionality, including error handling,
- * memory allocation, and library version information
- */
 namespace services
 {
-/**
- * @ingroup memory
- * @{
- */
+namespace interface1
+{
 
-/**
- * Allocates an aligned block of memory
- * \param[in] size      Size of the block of memory in bytes
- * \param[in] alignment Alignment constraint. Must be a power of two
- * \return Pointer to the beginning of a newly allocated block of memory
- */
-DAAL_EXPORT void *daal_malloc(size_t size, size_t alignment = DAAL_MALLOC_DEFAULT_ALIGNMENT);
+template <typename T>
+class AllocatorIface
+{
+public:
+    virtual ~AllocatorIface() { }
+    virtual T *allocate(size_t size) = 0;
+    virtual void deallocate(T *ptr, size_t size) = 0;
+};
 
-/**
- * Deallocates the space previously allocated by daal_malloc
- * \param[in] ptr   Pointer to the beginning of a block of memory to deallocate
- */
-DAAL_EXPORT void daal_free(void *ptr);
+template <typename T>
+class DefaultAllocator : public AllocatorIface<T>
+{
+public:
+    virtual T *allocate(size_t size) DAAL_C11_OVERRIDE
+    { return (T *)daal::services::daal_malloc(sizeof(T) * size); }
 
+    virtual void deallocate(T *ptr, size_t size) DAAL_C11_OVERRIDE
+    { daal::services::daal_free((void *)ptr); }
+};
 
-/**
- * Allocates an aligned block of memory, preferable in multithreaded code
- * \param[in] size      Size of the block of memory in bytes
- * \param[in] alignment Alignment constraint. Must be a power of two
- * \return Pointer to the beginning of a newly allocated block of memory
- */
-DAAL_EXPORT void *daal_scalable_malloc(size_t size, size_t alignment = DAAL_MALLOC_DEFAULT_ALIGNMENT);
+template <typename T>
+class ScalableAllocator : public Base, public AllocatorIface<T>
+{
+public:
+    virtual T *allocate(size_t size) DAAL_C11_OVERRIDE
+    { return (T *)daal::services::daal_scalable_malloc(sizeof(T) * size); }
 
-/**
- * Deallocates the space previously allocated by daal_scalable_malloc
- * \param[in] ptr   Pointer to the beginning of a block of memory to deallocate
- */
-DAAL_EXPORT void daal_scalable_free(void *ptr);
+    virtual void deallocate(T *ptr, size_t size) DAAL_C11_OVERRIDE
+    { daal::services::daal_scalable_free((void *)ptr); }
+};
 
-/**
- * Copies bytes between buffers
- * \param[out] dest               Pointer to new buffer
- * \param[in]  numberOfElements   Size of new buffer
- * \param[in]  src                Pointer to source buffer
- * \param[in]  count              Number of bytes to copy.
- */
-DAAL_EXPORT void  daal_memcpy_s(void *dest, size_t numberOfElements, const void *src, size_t count);
-/** @} */
+} // namespace interface1
 
-DAAL_EXPORT float daal_string_to_float(const char * nptr, char ** endptr);
+using interface1::AllocatorIface;
+using interface1::DefaultAllocator;
+using interface1::ScalableAllocator;
 
-DAAL_EXPORT double daal_string_to_double(const char * nptr, char ** endptr);
-}
+} // namespace services
 } // namespace daal
 
 #endif

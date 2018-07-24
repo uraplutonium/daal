@@ -631,7 +631,7 @@ int TreeBuilderIndexed<algorithmFPType, cpu>::doPartitionDirect(size_t n, const 
     int iRowSplitVal = -1;
 
     IndexType* bestSplitIdxRight = bestSplitIdx + nLeft;
-    dtrees::internal::TVector<typename super::ghType, cpu, ScalableAllocator<cpu>> aTmp(n);
+    dtrees::internal::TVector<typename super::ghType, cpu, dtrees::internal::ScalableAllocator<cpu>> aTmp(n);
     typename super::ghType* pGHLeft = aTmp.get();
     typename super::ghType* pGHRight = pGHLeft + nLeft;
     PRAGMA_IVDEP

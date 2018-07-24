@@ -156,6 +156,7 @@ public:
      */
     T &operator [] (size_t index)
     {
+        DAAL_ASSERT( index < _size );
         return _array[index];
     }
 
@@ -166,6 +167,7 @@ public:
     */
     const T &operator [] (size_t index) const
     {
+        DAAL_ASSERT( index < _size );
         return _array[index];
     }
 
@@ -176,6 +178,7 @@ public:
      */
     T &get(size_t index)
     {
+        DAAL_ASSERT( index < _size );
         return _array[index];
     }
 
@@ -187,6 +190,7 @@ public:
     */
     const T &get(size_t index) const
     {
+        DAAL_ASSERT( index < _size );
         return _array[index];
     }
 
@@ -247,8 +251,11 @@ public:
     /**
      *  Changes the size of a storage
      *  \param[in] newCapacity Size of a new storage.
+     *  \param[in] changeOnlyCapacity If flag is true, an actual size of a container
+     *                                does not change, but it may change a reserved memory.
+     *                                If flag is false, size of a container changes as well.
      */
-    bool resize(size_t newCapacity)
+    bool resize(size_t newCapacity, bool changeOnlyCapacity = true)
     {
         if(newCapacity <= _capacity) { return true; }
         T *newArray = (T *)services::daal_malloc(sizeof(T) * newCapacity);
@@ -273,6 +280,10 @@ public:
         services::daal_free(_array);
         _array = newArray;
         _capacity = newCapacity;
+
+        if (!changeOnlyCapacity)
+        { _size = newCapacity; }
+
         return true;
     }
 
